@@ -2,7 +2,7 @@ GPP=g++
 EXTRACT=git log
 GPPFLAGS=-std=c++11
 OBJECTS=log.txt
-DRIVER=test1.cpp
+DRIVER=test2.cpp
 EXE=test.exe
 START_DATE=Sep 7
 END_DATE=Sep 10
