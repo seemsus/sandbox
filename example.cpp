@@ -176,19 +176,18 @@ int main(int argc, char** argv)
 	{
     j = 0;
 		std::cout<<"select an option"<<std::endl;
-		std::cout<<"0:Exit"<<std::endl;
+		std::cout<<"0:menu"<<std::endl;
 		std::cout<<"1:list all commits"<<std::endl;
 		std::cout<<"2:list all commits by user"<<std::endl;
 		std::cout<<"3:list all number of commits by date"<<std::endl;
     std::cout<<"4:list all commits of date" << std::endl;
-    std::cout<<"5:Menu"<<std::endl;
+    std::cout<<"5:Exit"<<std::endl;
     std::cout << "Enter option no:     ";
 		std::cin >> opt;
-    std::cout <<opt<< std::endl;
+    std::cout << std::endl;
 		switch(opt)
 		{
 			case 0: 
-        std::cout << "Exiting app" << std::endl;
 				break;
 			case 1:
         for(auto i : log_list)
@@ -273,7 +272,7 @@ int main(int argc, char** argv)
       default:
         break;
 		}
-	}while(opt != 0);
+	}while(opt != 5);
   
   return 0;
 }

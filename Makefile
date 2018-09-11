@@ -1,5 +1,5 @@
 GPP=g++
-EXTRACT=git log
+EXTRACT=git log --all
 GPPFLAGS=-std=c++11
 OBJECTS=log.txt
 DRIVER=test2.cpp
@@ -12,7 +12,7 @@ END_DATE=Sep 10
 
 gcc0 : $(OBJECTS)
 	$(GPP) -o $(EXE) $(DRIVER) $(GPPFLAGS)
-	./$(EXE) $(START_DATE) $(END_DATE)
+	./$(EXE) 
 
 .PHONY: clean
 
