@@ -142,6 +142,7 @@ int main(int argc, char** argv)
       {
         file << j.commit << "\n";
       }
+      file << "\n";
     }
     file.close();
   }
