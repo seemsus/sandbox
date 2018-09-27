@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <regex>
 #include <map>
+#include <typeinfo>
 
 class logs{
 	public:
@@ -133,14 +134,15 @@ int main(int argc, char** argv)
   std::string Exact_month;
   int day, year, cnt = 0;
 
-  std::ofstream file("commit.txt");
+  std::ofstream file("commit.cmd");
   if(file.is_open())
   {
     for(auto i : users)
     {
-      for(auto j : i.commits)
+      for(int j {}; j < i.commits.size() - 1; j++)
       {
-        file << j.commit << "\n";
+        file << "git diff " << i.commits[j].commit << " " 
+              << i.commits[j+1].commit << " > result/" << i.name.substr(1,i.name.size()-2) << j << ".log\n";
       }
       file << "\n";
     }
@@ -177,7 +179,7 @@ int main(int argc, char** argv)
         }
       }
     }
-    std::cout<< i.name <<"\t"<< cnt <<std::endl;
+    //std::cout<< i.name <<"\t"<< cnt <<std::endl;
     cnt = 0;
 	}
 
