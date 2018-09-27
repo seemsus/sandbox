@@ -12,6 +12,18 @@ call g++ -o test.exe test.o
 call test.exe 2018 Jan 10 2018 Jan 15
 call commit.cmd
 
+rem call jarren function:
+
+
+del /Q /S test.exe
+del /Q /S commit.cmd
+del /Q /S log.txt
+del /Q %~dp0\result
+call rmdir /Q %~dp0\result
+
+pause
+
+rem test codes:
 rem setlocal ENABLEDELAYEDEXPANSION
 rem for /F "tokens=*" %%x in (commit.txt) do (
 rem   rem git diff %%x >> batfile!num!.txt
@@ -20,18 +32,20 @@ rem   set /a num=num+1
 rem )
 rem endlocal
 
-if exist %~dp0\result (
-  cd /d %~dp0\result
-  for /F "delims=" %%i in ('dir /b') do (rmdir "%%i" /s/q || del "%%i" /s/q)
-)
+rem if exist %~dp0\result (
+rem   cd /d %~dp0\result
+rem   for /F "delims=" %%i in ('dir /b') do (rmdir "%%i" /s/q || del "%%i" /s/q)
+rem )
+rem 
+rem cd /d %~dp0\..\
+rem del /Q sandbox
 
-cd %~dp0
-del /Q /S test.exe
-del /Q /S commit.cmd
-del /Q /S log.txt
-rem del /Q %~dp0\result
-call rmdir /Q %~dp0\result
+rem timeout /t 5
+rem if [%errorlevel%]==[1] echo failed
+rem if [%errorlevel%]==[0] echo successful
 
-pause
+rem C:\cygwin\bin\bash --login -c "cd C:/cygwin/home/sandbox; ./out_gnu.bat"
+
+
 
 

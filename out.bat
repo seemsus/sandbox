@@ -20,18 +20,26 @@ rem   set /a num=num+1
 rem )
 rem endlocal
 
-if exist %~dp0\result (
-  cd /d %~dp0
-  for /F "delims=" %%i in ('dir /b') do (rmdir "%%i" /s/q || del "%%i" /s/q)
-)
+rem deleting everything in the folder 
+rem if exist %~dp0\result (
+rem   cd /d %~dp0
+rem   for /F "delims=" %%i in ('dir /b') do (rmdir "%%i" /s/q || del "%%i" /s/q)
+rem )
 
-cd /d %~dp0\..\
-del /Q sandbox
-rem del /Q /S test.exe
-rem del /Q /S commit.cmd
-rem del /Q /S log.txt
-rem del /Q %~dp0\result
-rem call rmdir /Q %~dp0\result
+rem cd /d %~dp0\..\
+rem del /Q sandbox
+
+rem timeout /t 5
+rem if [%errorlevel%]==[1] echo failed
+rem if [%errorlevel%]==[0] echo successful
+
+rem C:\cygwin\bin\bash --login -c "cd C:/cygwin/home/sandbox; ./out_gnu.bat"
+
+del /Q /S test.exe
+del /Q /S commit.cmd
+del /Q /S log.txt
+del /Q %~dp0\result
+call rmdir /Q %~dp0\result
 
 rem pause
 
