@@ -21,17 +21,18 @@ rem )
 rem endlocal
 
 if exist %~dp0\result (
-  cd /d %~dp0\result
+  cd /d %~dp0
   for /F "delims=" %%i in ('dir /b') do (rmdir "%%i" /s/q || del "%%i" /s/q)
 )
 
-cd %~dp0
-del /Q /S test.exe
-del /Q /S commit.cmd
-del /Q /S log.txt
+cd /d %~dp0\..\
+del /Q sandbox
+rem del /Q /S test.exe
+rem del /Q /S commit.cmd
+rem del /Q /S log.txt
 rem del /Q %~dp0\result
-call rmdir /Q %~dp0\result
+rem call rmdir /Q %~dp0\result
 
-pause
+rem pause
 
 
