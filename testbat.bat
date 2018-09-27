@@ -1,47 +1,57 @@
-:: Author : Hanzalah the Great II
+REM Author : Hanzalah the Great II
 
-REM Still in testing phase. Not fully completed. Will test out only for team a and b
-REM Create a "sep250_18f_staff" folder if not created
-REM Put "testbat.bat" + "test3.cpp" + "Makefile" in "sep250_18f_staff"
-REM Clone "sep250_18f_team_a" and "sep250_18f_team_b" one level up of "sep250_18f_staff"
-REM Create subfolders in "sep250_18f_staff" = "Results" and "Diff_outputs"
-REM Create a dummy "log_a.txt" and "log_b.txt" in "Diff_outputs"
-REM Run testbat.bat in "sep250_18f_staff"
-REM Watch magic happens
-REM Else call author
+:: Still in testing phase. Not fully completed. Will test out only for team a and b
+:: Create a "sep250_18f_staff" folder if not created
+:: Put "testbat.bat" + "test3.cpp" in "sep250_18f_staff"
+:: Create subfolders in "sep250_18f_staff" = "Results" and "Diff_outputs"
+:: Create a dummy "log_a.txt" and "log_b.txt" in "Diff_outputs"
+:: Run testbat.bat in "sep250_18f_staff"
+:: Watch magic happens
+:: Else call author
 
-@echo off
+:: To modify:
+:: Do for all teams
+:: Implement in for loops or
+:: Implement Parallel execution
+:: To note: Will work providing shell/environment has g++/make/diff/git build-in
 
-REM To modify:
-REM Do for all teams
-REM Implement in for loops or
-REM Implement Parallel execution
-REM To note: Will work providing shell/environment has g++/make/diff build-in
+cd %~dp0\..\
+
+:: uncomment below if you want it as prompt
+::set /p user= "Enter git username: "   
+::set /p pwd= "Enter git password: "
+
+set user=m.mazlan
+set pwd=szmazozs2
+
+git clone http://%user%:%pwd%@git.sg.digipen.edu/projects/sep250_18f_team_a 
+git clone http://%user%:%pwd%@git.sg.digipen.edu/projects/sep250_18f_team_b 
 
 ren %~dp0\Diff_outputs\log_a.txt log_old_a.txt 
 ren %~dp0\Diff_outputs\log_b.txt log_old_a.txt
-
-copy %~dp0\Makefile %~dp0\..\sep250_18f_team_a
-copy %~dp0\Makefile %~dp0\..\sep250_18f_team_b
 
 copy %~dp0\test3.cpp %~dp0\..\sep250_18f_team_a
 copy %~dp0\test3.cpp %~dp0\..\sep250_18f_team_b
 
 cd %~dp0\..\sep250_18f_team_a
 
-make gcc0
+call git log --all > log.txt
+call g++ -c -o test.o test3.cpp -std=c++11
+call g++ -o test.exe test.o
+call test.exe 2018 Jan 10 2018 Jan 15
+call commit.cmd
 move %~dp0\..\sep250_18f_team_a\log.txt %~dp0\Diff_outputs\log_a.txt
-del commit.txt
-del Makefile
 del test3.cpp
 del test.exe
 
 cd %~dp0\..\sep250_18f_team_b
 
-make gcc0
+call git log --all > log.txt
+call g++ -c -o test.o test3.cpp -std=c++11
+call g++ -o test.exe test.o
+call test.exe 2018 Jan 10 2018 Jan 15
+call commit.cmd
 move %~dp0\..\sep250_18f_team_b\log.txt %~dp0\Diff_outputs\log_b.txt
-del commit.txt
-del Makefile
 del test3.cpp
 del test.exe
 
@@ -56,6 +66,4 @@ move %~dp0\Diff_outputs\team_b_res.txt %~dp0\Results\team_b_res.txt
 del log_old_a.txt
 del log_old_b.txt
 
-REM To add on:
-REM Include timestamp for each results
-REM Implement Grading.exe
+:: continue to grading.exe
