@@ -41,7 +41,7 @@ del /Q /S test.exe
 del /Q /S commit.cmd
 del /Q /S log.txt
 
-move %~dp0\result %~dp0\..\..\
+move %~dp0\result %~dp0\..\Data
 
 del /Q %~dp0\result
 call rmdir /Q %~dp0\result
