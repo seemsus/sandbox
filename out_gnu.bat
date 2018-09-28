@@ -7,19 +7,21 @@ set /a num=0
 
 call mkdir result
 call git log --all > log.txt
-call g++ -c -o test.o test3.cpp -std=c++11
+call g++ -c -o test.o test4.cpp -std=c++11
 call g++ -o test.exe test.o
-call test.exe 2018 Jan 10 2018 Jan 15
-call commit.cmd
+call test.exe 2018 Sep 26 2018 Sep 27
+move %~dp0\name.txt %~dp0\result
+move %~dp0\commit.cmd %~dp0\result
+call %~dp0\result\commit.cmd
 
 rem call jarren function:
 
 
-del /Q /S test.exe
-del /Q /S commit.cmd
-del /Q /S log.txt
-del /Q %~dp0\result
-call rmdir /Q %~dp0\result
+rem del /Q /S test.exe
+rem del /Q /S commit.cmd
+rem del /Q /S log.txt
+rem del /Q %~dp0\result
+rem call rmdir /Q %~dp0\result
 
 pause
 
