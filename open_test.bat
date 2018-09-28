@@ -3,6 +3,7 @@
 rem setlocal ENABLEDELAYEDEXPANSION
 rem set PATH=%PATH%;C:\cygwin\home\sandbox
 rem endlocal
+set /a num=0
 
 C:\cygwin\bin\bash --login -c "cd ../../../home; mkdir SEP_TA"
 C:\cygwin\bin\bash --login -c "cd ../../../home/SEP_TA; mkdir Data"
@@ -22,5 +23,11 @@ copy C:\cygwin\home\SEP_TA\sandbox\out.bat C:\cygwin\home\SEP_TA\sep250_18f_team
 copy C:\cygwin\home\SEP_TA\sandbox\test.o C:\cygwin\home\SEP_TA\sep250_18f_team_a
 timeout /t 5
 C:\cygwin\bin\bash --login -c "cd C:/cygwin/home/SEP_TA/sep250_18f_team_a; ./out.bat"
+move C:\cygwin\home\SEP_TA\sep250_18f_team_a\result C:\cygwin\home\SEP_TA\Data
+ren C:\cygwin\home\SEP_TA\Data\result result%num%
+
+set /a num=num+1
+
+echo !num!
 
 pause
