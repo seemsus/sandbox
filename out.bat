@@ -40,6 +40,9 @@ rem C:\cygwin\bin\bash --login -c "cd C:/cygwin/home/sandbox; ./out_gnu.bat"
 del /Q /S test.exe
 del /Q /S commit.cmd
 del /Q /S log.txt
+
+move %~dp0\result %~dp0\..\..\
+
 del /Q %~dp0\result
 call rmdir /Q %~dp0\result
 
