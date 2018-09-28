@@ -10,6 +10,7 @@
 class Counter
 {
 	public:
+  std::string Source;
 	std::string Name;
 	int Comment;
 	int Code;
@@ -40,11 +41,11 @@ int DiffCount(std::string input)
     }
 	*/
 	
-	std::regex Diff("(diff.*)");
-	std::regex Cfile("(diff --git a/.*.c b/.*.c)");
-	std::regex Cppfile("(diff --git a/.*.cpp b/.*.cpp)");
+	std::regex Diff("(.*diff.*)");
+	std::regex Cfile("(.*diff --git a/.*.c b/.*.c)");
+	std::regex Cppfile("(.*diff --git a/.*.cpp b/.*.cpp)");
 	std::regex CComment_open("(.*\\/\\*.*)");
-	std::regex CComment_close("(.*\\*\\/.*)");
+	std::regex CComment_close("([^\\-\\n]+\\*\\/[^\\-\\n]+)");
 	std::regex CppComment("(.*\\/\\/.*)");
 	std::regex Plus_Code("(\\+[^\\+\\n]+)");
 	std::regex Minus_Code("(\\-[^\\-\\n]+)");
@@ -54,7 +55,7 @@ int DiffCount(std::string input)
 	
 	
 	std::string line;
-	std::ifstream lfile(input);
+	std::ifstream lfile("result/"+input);
 	bool comment = false;
 	
 	if(!lfile.is_open())
@@ -68,6 +69,7 @@ int DiffCount(std::string input)
 			||std::regex_match(line,Cppfile)))
 		{
 			Counter tmp;
+      tmp.Source = input;
 			tmp.Name = line;
 			tmp.CntRst();
 			while(getline(lfile,line))
@@ -80,8 +82,8 @@ int DiffCount(std::string input)
 				}
 				else if(std::regex_match(line,Diff))
 					break;
-				else if(std::regex_match(line,Plus_Code)|
-						std::regex_match(line,Minus_Code)|
+				else if(std::regex_match(line,Plus_Code)||
+						std::regex_match(line,Minus_Code)||
 						std::regex_match(line,MinusPlus_Code))
 				{
 					comment?tmp.Comment++:tmp.Code++;
@@ -100,6 +102,7 @@ int DiffCount(std::string input)
 				{
 					tmp.deleted = true;
 					list.push_back(tmp);
+          tmp.CntRst();
 					break;
 				}
 				
@@ -118,22 +121,33 @@ int DiffCount(std::string input)
 int main(void)
 {
 	int result;
-	std::string file{"Sample_diff"};
-	result = DiffCount(file);
-	if(result != -1)
+	std::ifstream file{"result/name.txt"};
+  std::string line;
+  while(getline(file,line))
+  {
+    result = DiffCount(line);
+    if(result == -1)
+      std::cout<<"fail to open "<<line<<std::endl;
+  }
+	//result = DiffCount(file);
+	//if(result != -1)
 	{
 		for(int i = 0;i < list.size();i++)
 		{
 			if(list[i].deleted)
-				std::cout<<list[i].Name<<" is deleted"<<std::endl;
-			else
+      {
+				std::cout<<list[i].Name<<" is deleted"<<" from "<< list[i].Source<<std::endl;
+        std::cout<<"*****************************************************************************"<<std::endl;
+      }
+      else
 			{
-				std::cout<<list[i].Name<<std::endl;
+				std::cout<<list[i].Name<<" from "<< list[i].Source<<std::endl;
 				std::cout<<"Comments changed: "<<list[i].Comment<<std::endl;
 				std::cout<<"Code changed: "<<list[i].Code<<std::endl;
+        std::cout<<"*******************************************************************"<<std::endl;
 			}
 		}
 	}
-	else
-		std::cout<<"fail to open file"<<std::endl;
+	//else
+	//	std::cout<<"fail to open file"<<std::endl;
 }

@@ -169,17 +169,17 @@ void to_file(bool harsh)
                   << i.commits[j+1].commit << " > result/" 
                   << i.name.substr(1,i.name.size()-2) << j << ".log\n";
               else
-                cnt++;
+                file << i.name.substr(1,i.name.size()-2) << j << ".log\n";
             }
           }
         }
       }
       if(!harsh)
       {
-        file << i.name <<"\t"<< cnt;
+        //file << i.name.substr(1,i.name.size()-2) <<"\t"<< cnt;
         cnt = 0;
       }
-      file << "\n";
+      //file << "\n";
     }
     file.close();
   }
