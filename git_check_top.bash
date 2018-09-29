@@ -6,10 +6,17 @@ g++ -c -o test.o test4.cpp -std=c++11
 g++ -o test.exe test.o
 
 cd ..
-for i in sep250_18f_team_a sep250_18f_team_b sep250_18f_team_c sep250_18f_team_d sep250_18f_team_e sep250_18f_team_f sep250_18f_team_g sep250_18f_team_h
+for i in sep250_18f_team_*
 do
-   echo "I am in directory: $i"
+   echo
+   echo "///////////////////////////////////////////////////////////////////////////////"
+   echo "// Processing for : $i"
+   echo "///////////////////////////////////////////////////////////////////////////////"
+   cd $i
+   echo "Entering the processing directory..."
    pwd
+   echo "Leaving the processing directory..."
+   cd ..
 
 #    ./test.exe 2018 Sep 26 2018 Sep 27
 #    
