@@ -158,12 +158,12 @@ void to_file()
 					day = stoi(log_list[i].date.substr(8, 2));
 					if(inbetween(stoi(timeline.start_day),stoi(timeline.end_day),day))
 					{
-						file << "git diff " << log_list[i].commit << " " 
+						file << "git diff -U99999 " << log_list[i].commit << " " 
 						<< log_list[i-1].commit << " > " 
 						<< log_list[i].name.substr(1,log_list[i].name.size()-2) 
 						<< log_list.size()-i << ".log\n";
 						
-						file1<<" result/" 
+						file1<<"result/" 
 						<< log_list[i].name.substr(1,log_list[i].name.size()-2) 
 						<< log_list.size()-i << ".log\n";
 					}
