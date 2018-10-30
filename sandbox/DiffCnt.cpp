@@ -46,13 +46,33 @@ class user
 	public:
 	std::string name;
 	int commits;
+	int Comment;
+	int Code;
+	int Space;
+	int deleted;
+	int NewFile;
+	int score;
 	std::vector<Counter> counters;
+	
+	void Zero()
+	{
+		commits = 0;
+		Comment = 0;
+		Code = 0;
+		Space = 0;
+		deleted = 0;
+		NewFile = 0;
+		score = 0;
+	}
+	
 };
+
 /*********************************************************
 GLOBAL VARIABLES
 *********************************************************/
 std::vector<Counter> list;
 std::vector<user> users;
+int Total_Score;
 int Weights[5];
 
 //regex global templates
@@ -150,9 +170,89 @@ int DiffCount(std::string name, std::string input)
 	return 0;
 }
 
+void calc_score()
+{
+	for(auto& i : users)
+	{
+		for(auto& j : i.counters)
+		{
+			i.Comment += j.Comment;
+			i.Code += j.Code;
+			i.Space += j.Space;
+			i.deleted += j.deleted;
+			i.NewFile += j.NewFile;
+		}
+		i.score = (i.Code * Weights[0])+(i.Comment * Weights[1])+
+					(i.Space * Weights[2])+(i.deleted * Weights[3])+
+					(i.NewFile * Weights[4]);
+		Total_Score += i.score;
+	}
+	
+	std::ifstream dupe("../sandbox/Duplicate.txt");
+	if(dupe.is_open())
+	{
+		std::string line;
+		while(1)
+		{
+			if(std::regex_match(line,Code) || getline(dupe,line))
+			{
+				if(std::regex_match(line,Code))
+				{
+					std::string pri;
+					pri = line.substr(line.find_first_of('<')+1,line.find_first_of('>')-2);
+					for(auto& i :users)
+					{
+						//std::cout<< pri << "  " << i.name << std::endl;
+						if(pri == i.name)
+						{
+							while(getline(dupe,line)&&(!std::regex_match(line,Code)&&line.length()!=0))//check for dupes
+							{
+								std::string sub;
+								sub = line.substr(line.find_first_of('<')+1,line.find_first_of('>')-1);
+								for(int j = 0;j<users.size();j++)
+								{
+									std::cout<<sub<<" "<<users[j].name<<std::endl;
+									if(users[j].name == sub)//matched dupe
+									{
+										i.commits += users[j].commits;
+										i.Comment += users[j].Comment;
+										i.Code += users[j].Code;
+										i.Space += users[j].Space;
+										i.deleted += users[j].deleted;
+										i.NewFile += users[j].NewFile;
+										i.score += users[j].score;
+									
+										users.erase(users.begin()+j);
+										break;
+									}
+								}
+							}
+							break;
+						}
+					}
+				}
+				else
+					continue;
+			}
+			else
+				break;
+		}
+	}
+	else
+	{
+		std::cout<<"fail to load duplicate names config file"<<std::endl;
+	}
+}
+
 void gen_html()
 {
 	std::ofstream Ofile;
+	int T_commits = 0;
+	int T_Code = 0;
+	int T_Comments = 0;
+	int T_Space = 0;
+	int T_Deleted = 0;
+	int T_New = 0;
 	Ofile.open("result/Final.html");
 	if(Ofile.is_open())
 	{
@@ -174,44 +274,51 @@ void gen_html()
 		
 		Ofile<<"<tr>\n";
 		Ofile<<"<th>Name</th>\n";
-		Ofile<<"<th>No. of Commits</th>\n";
-		Ofile<<"<th>No. of Code</th>\n";
-		Ofile<<"<th>No. of Comment</th>\n";
-		Ofile<<"<th>No. of Space</th>\n";
-		Ofile<<"<th>No. of Deleted files</th>\n";
-		Ofile<<"<th>No. of New Files</th>\n";
-		Ofile<<"<th>Final Score</th>\n";
+		Ofile<<"<th>No. of Commits lines</th>\n";
+		Ofile<<"<th>No. of Code lines</th>\n";
+		Ofile<<"<th>No. of Comment lines</th>\n";
+		Ofile<<"<th>No. of Space lines</th>\n";
+		Ofile<<"<th>No. of Deleted files lines</th>\n";
+		Ofile<<"<th>No. of New Files lines</th>\n";
+		Ofile<<"<th>Total Score</th>\n";
+		Ofile<<"<th>Percentile</th>\n";
 		Ofile<<"</tr>\n";
 		
-		for(auto i : users)
+		for(auto& i : users)
 		{
-			int Comment = 0;
-			int Code = 0;
-			int Space = 0;
-			int deleted = 0;
-			int NewFile = 0;
-			for(auto j : i.counters)
-			{
-				Comment += j.Comment;
-				Code += j.Code;
-				Space += j.Space;
-				deleted += j.deleted;
-				NewFile += j.NewFile;
-			}
-			int score = (Code * Weights[0])+(Comment * Weights[1])+
-						(Space * Weights[2])+(deleted * Weights[3])+
-						(NewFile * Weights[4]);
+			double percentile = ((double)i.score / (double)Total_Score)*100;
 			Ofile<<"<tr>\n";
 			Ofile<<"<td>"<<i.name<<"</td>\n"
 				 <<"<td>"<<i.commits<<"</td>\n"
-				 <<"<td>"<<Code<<"</td>\n"
-				 <<"<td>"<<Comment<<"</td>\n"
-				 <<"<td>"<<Space<<"</td>\n"
-				 <<"<td>"<<deleted<<"</td>\n"
-				 <<"<td>"<<NewFile<<"</td>\n"
-				 <<"<td>"<<score<<"</td>\n";
+				 <<"<td>"<<i.Code<<"</td>\n"
+				 <<"<td>"<<i.Comment<<"</td>\n"
+				 <<"<td>"<<i.Space<<"</td>\n"
+				 <<"<td>"<<i.deleted<<"</td>\n"
+				 <<"<td>"<<i.NewFile<<"</td>\n"
+				 <<"<td>"<<i.score<<"</td>\n"
+				 <<"<td>"<<percentile<<"%</td>\n";
 			Ofile<<"</tr>\n";
+			//add up to get total
+			T_commits += i.commits;
+			T_Code += i.Code;
+			T_Comments += i.Comment;
+			T_Space += i.Space;
+			T_Deleted += i.deleted;
+			T_New += i.NewFile;
 		}
+		
+		Ofile<<"<tr>\n";
+		Ofile<<"<td>Total</td>\n"
+			 <<"<td>"<<T_commits<<"</td>\n"
+			 <<"<td>"<<T_Code<<"</td>\n"
+			 <<"<td>"<<T_Comments<<"</td>\n"
+			 <<"<td>"<<T_Space<<"</td>\n"
+			 <<"<td>"<<T_Deleted<<"</td>\n"
+			 <<"<td>"<<T_New<<"</td>\n"
+			 <<"<td>"<<Total_Score<<"</td>\n"
+			 <<"<td>100%</td>\n";
+		Ofile<<"</tr>\n";
+			
 		Ofile<<"</table>\n</body>\n</html>\n";
 	}
 }
@@ -225,12 +332,15 @@ int main(int argc, char** argv)
 		return 0;
 	}
 	
+	//initialize total score
+	Total_Score = 0; 
+	//initialize temp strings from input
 	std::string W0 = argv[1];
 	std::string W1 = argv[2];
 	std::string W2 = argv[3];
 	std::string W3 = argv[4];
 	std::string W4 = argv[5];
- 
+	//convert input strings to weightages
 	Weights[0] = std::stoi(W0);
 	Weights[1] = std::stoi(W1);
 	Weights[2] = std::stoi(W2);
@@ -239,6 +349,7 @@ int main(int argc, char** argv)
 	
 	std::ifstream Lfile{"result/List.txt"};
 	std::ifstream Rfile{"result/report.txt"};
+	std::ifstream Users{"KnownUsers.txt"};
 	std::string line,name;
 	//generate all users frm previous exe
 	if(Rfile.is_open())
@@ -246,9 +357,18 @@ int main(int argc, char** argv)
 		while(getline(Rfile,line))
 		{
 			user tmp;
+			tmp.Zero();
 			tmp.name = line.substr(0,line.find_first_of('@'));
 			getline(Rfile,line);
 			tmp.commits = stoi(line);
+			for(auto& i : users)
+			{
+				if(i.name == tmp.name)
+				{
+					i.commits += tmp.commits;
+					continue;
+				}
+			}
 			users.push_back(tmp);
 		}
 	}
@@ -267,10 +387,10 @@ int main(int argc, char** argv)
 		}
 		Lfile.close();
 	}
-	
+	calc_score();
 	gen_html();
 #if 0
-	//generate final report
+	//generate final report in text
 	std::ofstream Ofile;
 	Ofile.open("result/Final.txt");
 	if(Ofile.is_open())

@@ -1,0 +1,5 @@
+//Put known dublicate names with the top most being the desired name
+//Use + or - infront of the desired name to indicate new user
+//Omit the @domain portion of the email address
+//Encapsulate the name in <>
+
